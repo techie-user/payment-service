@@ -1,0 +1,5 @@
+# exclude following folders & files
+target/*
+.idea
+*.iml
+/target
