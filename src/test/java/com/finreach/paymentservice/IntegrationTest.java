@@ -1,9 +1,8 @@
 package com.finreach.paymentservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finreach.paymentservice.api.request.CreateAccount;
-import com.finreach.paymentservice.api.request.CreatePayment;
-import com.finreach.paymentservice.util.TransactionsGenerator;
+import com.finreach.paymentservice.api.request.AccountRequest;
+import com.finreach.paymentservice.api.request.PaymentRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +28,15 @@ public class IntegrationTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
-    private TransactionsGenerator generator;
+    /*@Autowired
+    private TransactionsGenerator generator;*/
 
     @Test
     public void scenario1() throws Exception {
         final String a1 = createAccount(100d);
         final String a2 = createAccount(0d);
 
-        MvcResult result = mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(50d, a1, a2))))
+        MvcResult result = mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(50d, a1, a2))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.amount").value(50d))
                 .andExpect(jsonPath("$.state").value("CREATED"))
@@ -89,9 +86,7 @@ public class IntegrationTest {
         final String a1 = createAccount(0d);
         final String a2 = createAccount(0d);
 
-        MvcResult result = mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(50d, a1, a2))))
+        MvcResult result = mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(50d, a1, a2))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.amount").value(50d))
                 .andExpect(jsonPath("$.state").value("CREATED"))
@@ -137,9 +132,7 @@ public class IntegrationTest {
         final String a1 = createAccount(0d);
         final String a2 = createAccount(0d);
 
-        MvcResult result = mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(50d, a1, a2))))
+        MvcResult result = mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(50d, a1, a2))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.amount").value(50d))
                 .andExpect(jsonPath("$.state").value("CREATED"))
@@ -175,9 +168,7 @@ public class IntegrationTest {
     public void scenario4() throws Exception {
         final String a1 = createAccount(0d);
 
-        mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(50d, a1, a1))))
+        mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(50d, a1, a1))))
                 .andExpect(status().isBadRequest());
     }
 
@@ -186,17 +177,13 @@ public class IntegrationTest {
         final String a1 = createAccount(0d);
         final String a2 = createAccount(0d);
 
-        mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(-50d, a1, a2))))
+        mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(-50d, a1, a2))))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void scenario6() throws Exception {
-        mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(-50d,
+        mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(-50d,
                         "nonexistent",
                         "nonexistent"))))
                 .andExpect(status().isNotFound());
@@ -206,9 +193,7 @@ public class IntegrationTest {
     public void scenario7() throws Exception {
         final String a1 = createAccount(0d);
 
-        mockMvc.perform(post("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreatePayment(-50d, a1, "nonexistent"))))
+        mockMvc.perform(post("/api/v1/payment").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new PaymentRequest(-50d, a1, "nonexistent"))))
                 .andExpect(status().isNotFound());
     }
 
@@ -248,9 +233,7 @@ public class IntegrationTest {
 
 
     private String createAccount(Double balance) throws Exception {
-        return mapper.readTree(mockMvc.perform(post("/api/v1/account")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(new CreateAccount(balance))))
+        return mapper.readTree(mockMvc.perform(post("/api/v1/account").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(new AccountRequest(balance))))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()).findValue("id").asText();
     }
