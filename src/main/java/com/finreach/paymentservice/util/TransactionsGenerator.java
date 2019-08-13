@@ -1,11 +1,11 @@
 package com.finreach.paymentservice.util;
 
-import com.finreach.paymentservice.api.request.CreateAccount;
+/*import com.finreach.paymentservice.api.request.AccountRequest;
 import com.finreach.paymentservice.domain.Account;
 import com.finreach.paymentservice.domain.Transaction;
 import com.finreach.paymentservice.statistics.Statistic;
 import com.finreach.paymentservice.statistics.Statistics;
-import com.finreach.paymentservice.store.Accounts;
+import com.finreach.paymentservice.store.AccountStore;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.stream.Collectors;*/
 
-@Component
+//@Component
 public class TransactionsGenerator {
-    private static final int ACCOUNTS = 100;
+   /* private static final int ACCOUNTS = 100;
     private static final int DURATION = 10;
     private static final double MIN_AMOUNT = 10d;
     private static final double MAX_AMOUNT = 1000d;
@@ -37,15 +37,15 @@ public class TransactionsGenerator {
 
             final RandomAccounts randomAccounts = randomAccounts();
             final double amount = randomAmount();
-            Accounts.transaction(randomAccounts.a1, -amount);
-            Accounts.transaction(randomAccounts.a2, amount);
+            AccountStore.transaction(randomAccounts.a1, -amount);
+            AccountStore.transaction(randomAccounts.a2, amount);
         }
     }
 
     public Statistics calculate(int periodInSeconds) {
         Date when = Date.from(Instant.now().minusSeconds(periodInSeconds));
         final Statistics statistics = new Statistics();
-        Accounts.all()
+        AccountStore.all()
                 .forEach(account -> calculate(periodInSeconds, when, statistics, account));
 
         return statistics;
@@ -78,7 +78,7 @@ public class TransactionsGenerator {
 
     private void generateAccounts() {
         for (int i = 0; i < ACCOUNTS; i++) {
-            genAccounts.add(Accounts.create(new CreateAccount(BALANCE)));
+            genAccounts.add(AccountStore.create(new AccountRequest(BALANCE)));
         }
     }
 
@@ -114,5 +114,5 @@ public class TransactionsGenerator {
 
         final long diff = d2.toInstant().getEpochSecond() - d1.toInstant().getEpochSecond();
         return diff >= 0 && diff < seconds;
-    }
+    }*/
 }
